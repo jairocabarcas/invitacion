@@ -24,7 +24,7 @@ export default function RSVPModal() {
             {/* Botón que abre el modal */}
             <Dialog>
                 <DialogTrigger asChild>
-                    <button className="bg-[#b59c78] text-white px-6 py-2 rounded-full shadow hover:bg-[#9c8566] transition text-sm md:text-base">
+                    <button className="bg-[#937552] text-white px-6 py-2 rounded-full shadow hover:bg-[#9c8566] transition text-sm md:text-base">
                         Confirmar asistencia
                     </button>
                 </DialogTrigger>

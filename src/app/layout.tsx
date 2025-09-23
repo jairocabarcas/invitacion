@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Playfair_Display} from "next/font/google";
+import { Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 
 // const geistSans = Geist({
@@ -13,18 +13,11 @@ import "./globals.css";
 // });
 
 const cormorantGaramond = Cormorant_Garamond({
-    weight: ['400', '400', '700', '700'], // 400 = normal, 700 = negrita
-    style: ['normal', 'italic', 'normal', 'italic'], // normal e italic
+    weight: ['400', '400', '600', '600', '700', '700'], // 400 = normal, 700 = negrita
+    style: ['normal', 'italic', 'normal', 'italic', 'normal', 'italic'], // normal e italic
     subsets: ['latin'],
     display: 'swap',
 });
-
-const playFairDisplay = Playfair_Display({
-    weight: ['400', '400', '700', '700'], // 400 = normal, 700 = negrita
-    style: ['normal', 'italic', 'normal', 'italic'], // normal e italic
-    subsets: ['latin'],
-    display: 'swap',
-})
 
 export const metadata: Metadata = {
   title: "Meli & Jairo",

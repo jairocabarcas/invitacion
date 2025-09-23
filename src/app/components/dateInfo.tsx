@@ -4,7 +4,7 @@ const playFairDisplay = Playfair_Display({
     weight: ['400', '400','500', '500', '700', '700'], // 400 = normal, 700 = negrita
     style: ['normal', 'italic', 'normal', 'italic', 'normal', 'italic'], // normal e italic
     subsets: ['latin'],
-
+    display: "swap"
 })
 
 export default function DateInfo() {

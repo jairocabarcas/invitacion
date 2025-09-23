@@ -1,21 +1,36 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Cormorant_Garamond, Playfair_Display} from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// const geistSans = Geist({
+//   variable: "--font-geist-sans",
+//   subsets: ["latin"],
+// });
+//
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// });
+
+const cormorantGaramond = Cormorant_Garamond({
+    weight: ['400', '400', '700', '700'], // 400 = normal, 700 = negrita
+    style: ['normal', 'italic', 'normal', 'italic'], // normal e italic
+    subsets: ['latin'],
+    display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const playFairDisplay = Playfair_Display({
+    weight: ['400', '400', '700', '700'], // 400 = normal, 700 = negrita
+    style: ['normal', 'italic', 'normal', 'italic'], // normal e italic
+    subsets: ['latin'],
+    display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: "Meli & Jairo",
   description: "Invitación al matrimonio de Meli y Jairo",
 };
+
 
 export default function RootLayout({
   children,
@@ -25,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${cormorantGaramond.className} antialiased`}
       >
         {children}
       </body>

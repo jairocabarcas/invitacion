@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {GuestRequest, GuestResponse} from "@/models/guest.model";
 
-export default function AddGuestModal({mainGuestId, save, createdBy, event, isOpen, onChangeModalStatus}: NewGuestFormType) {
+export default function AddGuestModal({mainGuestId, save, createdBy, event, isOpen, onChangeModalStatus, buttonText, showButton, isCompanion}: NewGuestFormType) {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [phone, setPhone] = useState("");
@@ -48,11 +48,13 @@ export default function AddGuestModal({mainGuestId, save, createdBy, event, isOp
     return (
         <div className="text-center font-sans">
             <Dialog open={isOpen} onOpenChange={onChangeModalStatus}>
-                <DialogTrigger asChild>
-                    <Button className="bg-[#937552] text-white px-6 py-2 rounded-full hover:bg-[#937552]/50 transition">
-                        Añadir Invitado
-                    </Button>
-                </DialogTrigger>
+                {showButton &&
+                    <DialogTrigger asChild>
+                        <Button className="bg-[#937552] text-white px-6 py-2 rounded-full hover:bg-[#937552]/50 transition">
+                            {buttonText ? buttonText : "Añadir Invitado"}
+                        </Button>
+                    </DialogTrigger>
+                }
 
                 <DialogContent className="sm:max-w-md rounded-xl">
                     <DialogHeader>
@@ -125,5 +127,8 @@ type NewGuestFormType = {
     mainGuestId?: string;
     isOpen: boolean;
     onChangeModalStatus: (status: boolean) => void;
+    isCompanion: boolean;
+    buttonText?: string;
+    showButton: boolean;
 }
 

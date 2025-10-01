@@ -11,12 +11,22 @@ import AddGuestModal from "@/app/components/admin/newGuestForn";
 import {InvitationStatus, InvitationType} from "@/models/enums";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
-import {Ban, CalendarCheck, Delete, EllipsisVertical, Loader2, UserRoundPen} from "lucide-react";
+import {
+    Ban,
+    CalendarCheck,
+    Delete,
+    EllipsisVertical,
+    Loader2,
+    SquareMinus,
+    SquarePlus, UserPlus,
+    UserRoundPen
+} from "lucide-react";
 
 type TableComponentType ={
     guests: GuestResponse[],
-    onChangeStatus: (guetId: string, status: InvitationStatus, index: number) => void,
+    onChangeStatus: (guetId: string, status: InvitationStatus, index: number, subIndex?: number) => void,
     itemLoadingIndex: number,
+    subItemLoadingIndex: number,
     setOpenGuestId: (openGuestId: string) => void,
     openModal: (guestId: string) => void,
 }
@@ -29,6 +39,7 @@ export default function GuestManagement(){
     const [ selectedEvents, setSelectedEvents] = useState<EventResponse | undefined>(undefined);
     const [guests, setGuests] = useState<GuestResponse[]>([]);
     const [itemLoadingIndex, setItemLoadingIndex] = useState(-1);
+    const [itemLoadingSubIndex, setItemLoadingSubIndex] = useState(-1);
     const [open, setOpen] = useState(false);
     const [openGuestId, setOpenGuestId] = useState<string | null>(null);
     const {user} = useSessionContext();
@@ -85,19 +96,21 @@ export default function GuestManagement(){
         });
     };
 
-    const handleChangeStatus = async (guestId: string, status: InvitationStatus, index: number) => {
+    const handleChangeStatus = async (guestId: string, status: InvitationStatus, index: number, subIndex: number =-1) => {
         setItemLoadingIndex(index);
+        setItemLoadingSubIndex(subIndex);
         const response = await updateStatus(guestId, status);
         if(response && selectedEvents){
             setGuests(await loadGuestsByEvent(selectedEvents.id));
             setItemLoadingIndex(-1);
+            setItemLoadingSubIndex(-1)
         }
     }
 
     return (
-        <div className="h-screen w-full p-12 bg-gray-50 font-sans">
+        <div className="min-h-screen w-full p-12 bg-gray-50 font-sans">
             <div className="flex flex-col h-full w-full border-2 border-gray-200 p-5 gap-4">
-                <div>
+                <div className="px-2">
                     <h1 className="text-3xl font-bold ">{`Hola ${user.name}`}</h1>
                 </div>
                 <>
@@ -109,18 +122,23 @@ export default function GuestManagement(){
                             <div className=" flex gap-4">
                                 <div>
                                     {selectedEvents &&
-                                        <Select defaultValue={selectedEvents.id}>
-                                            <SelectTrigger className="w-auto">
-                                                <SelectValue placeholder="Selecciona un evento"/>
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {
-                                                    events.length > 0 && events.map((event) => (
-                                                        <SelectItem value={event.id} key={event.id}>{event.title}</SelectItem>
-                                                    ))
-                                                }
-                                            </SelectContent>
-                                        </Select>
+                                        <div className="px-2">
+                                            <Select defaultValue={selectedEvents.id}>
+                                                <SelectTrigger className="w-auto">
+                                                    <SelectValue placeholder="Selecciona un evento"/>
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {
+                                                        events.length > 0 && events.map((event) => (
+                                                            <SelectItem value={event.id} key={event.id}>{event.title}</SelectItem>
+                                                        ))
+                                                    }
+                                                </SelectContent>
+                                            </Select>
+                                            <div>
+                                                <span>Total Invitados: {guests.length}</span>
+                                            </div>
+                                        </div>
                                     }
                                 </div>
                                 <div>
@@ -146,6 +164,7 @@ export default function GuestManagement(){
                                     itemLoadingIndex={itemLoadingIndex}
                                     openModal={openModal}
                                     setOpenGuestId={setOpenGuestId}
+                                    subItemLoadingIndex={itemLoadingSubIndex}
                                 />}
                             </div>
                             {
@@ -172,21 +191,18 @@ export default function GuestManagement(){
 }
 
 const GuestPanel = (
-    {guests, onChangeStatus, itemLoadingIndex, openModal, setOpenGuestId
+    {guests, onChangeStatus, itemLoadingIndex, subItemLoadingIndex, openModal, setOpenGuestId
     }: TableComponentType) => {
-    const getMainGuest= (mainGuestId: string) => {
-        console.log('mainguestId=> ', mainGuestId)
-        const guest = guests.find((guest) => guest.id === mainGuestId)
-        console.log('guest =>',guest)
-        if (guest) {
-            return guest.fullName;
-        }
-        return ''
+    const [expandedRow, setExpandedRow] = React.useState<number[]>([])
+    const expandRow = (row: number) => {
+        setExpandedRow(prevState => expandedRow.some(value => value === row) ?
+            expandedRow.filter(value => value!== row) :
+            [...prevState, row])
     }
-
     const getCompanion = (guestId: string) =>{
         return guests.filter(guest => guest.mainGuestId === guestId)
     }
+
     return (
         <div className="p-10">
             <Table>
@@ -195,61 +211,140 @@ const GuestPanel = (
                     <TableRow>
                         <TableHead className="text-center ">Nombre</TableHead>
                         <TableHead className="text-center ">Telefono</TableHead>
-                        <TableHead className="text-center ">Acompañante</TableHead>
                         <TableHead className="text-center ">Estado de la invitacion</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {Array.isArray(guests) && guests.map((guest, index) => (
-                        <TableRow key={guest.id}
-                                  className={`${index % 2 === 0 ? 'bg-[#DECDB2] hover:bg-[#B69A76]' : 'hover:bg-gray-300' }`}>
-                            <TableCell className="text-center">{guest.name +' '+ guest.surname}</TableCell>
-                            <TableCell className="text-center">{guest.identifier}</TableCell>
-                            <TableCell className="text-center">{getMainGuest(guest.mainGuestId??'')}</TableCell>
-                            <TableCell className="text-center">
-                                {InvitationType[guest.status as keyof typeof InvitationType]}
-                            </TableCell>
-                            <TableCell>
-                                {itemLoadingIndex === index ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <DropdownMenu>
-                                    <DropdownMenuTrigger asChild >
-                                        <Button className="bg-transparent hover:bg-gray-200"
-                                        >
-                                            <EllipsisVertical
-                                            className="text-black"/>
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        <DropdownMenuItem onClick={()=> {
-                                            setOpenGuestId(guest.id);
-                                        }}>
-                                            Añadir acompañante
-                                        </DropdownMenuItem>
-                                        {guest.status !== InvitationStatus.CONFIRMED &&
+                    {Array.isArray(guests) && guests.filter(guest => !guest.mainGuestId)
+                        .map((guest, index) => (
+                        <React.Fragment key={guest.id}>
+                            <TableRow
+                                      className={`${index % 2 === 0 ? 'bg-[#DECDB2] hover:bg-[#B69A76]' : 'hover:bg-gray-300' }`}
+
+                            >
+                                <TableCell className="text-center flex items-center"
+                                           onClick={() => expandRow(index)}
+                                >
+                                    {getCompanion(guest.id).length>0 && <>{expandedRow.some(value => value === index) ?
+                                        <SquarePlus className="pr-2"/> : <SquareMinus className="pr-2"/>}</>}
+                                    <>{guest.name +' '+ guest.surname}</>
+                                </TableCell>
+                                <TableCell className="text-center ">{guest.identifier}</TableCell>
+                                <TableCell className="text-center">
+                                    {InvitationType[guest.status as keyof typeof InvitationType]}
+                                </TableCell>
+                                <TableCell>
+                                    {itemLoadingIndex === index ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <DropdownMenu>
+                                        <DropdownMenuTrigger asChild >
+                                            <Button className="bg-transparent hover:bg-gray-200"
+                                            >
+                                                <EllipsisVertical
+                                                    className="text-black"/>
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent>
                                             <DropdownMenuItem
-                                                onClick={() => onChangeStatus(guest.id, InvitationStatus.CONFIRMED, index)}
-                                                className="font-sans">
-                                                <CalendarCheck/> Confirmar
+                                                onClick={()=> {setOpenGuestId(guest.id);}}
+                                                className="font-sans"
+                                            >
+                                                <UserPlus />Añadir acompañante
                                             </DropdownMenuItem>
-                                        }
-                                        {guest.status !== InvitationStatus.REJECTED &&
-                                            <DropdownMenuItem
-                                                onClick={() => onChangeStatus(guest.id, InvitationStatus.REJECTED, index)}
-                                                className="font-sans">
-                                                <Ban/> Rechazar
+                                            {guest.status !== InvitationStatus.CONFIRMED &&
+                                                <DropdownMenuItem
+                                                    onClick={() => onChangeStatus(guest.id, InvitationStatus.CONFIRMED, index)}
+                                                    className="font-sans">
+                                                    <CalendarCheck/> Confirmar
+                                                </DropdownMenuItem>
+                                            }
+                                            {guest.status !== InvitationStatus.REJECTED &&
+                                                <DropdownMenuItem
+                                                    onClick={() => onChangeStatus(guest.id, InvitationStatus.REJECTED, index)}
+                                                    className="font-sans">
+                                                    <Ban/> Rechazar
+                                                </DropdownMenuItem>
+                                            }
+                                            <DropdownMenuItem onClick={() => alert("Editar clickeado")}
+                                                              className="font-sans">
+                                                <UserRoundPen/> Editar
                                             </DropdownMenuItem>
-                                        }
-                                        <DropdownMenuItem onClick={() => alert("Editar clickeado")}
-                                                          className="font-sans">
-                                            <UserRoundPen/> Editar
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => alert("Eliminar clickeado")}
-                                                          className="font-sans">
-                                            <Delete/> Eliminar
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>}
-                            </TableCell>
-                        </TableRow>
+                                            <DropdownMenuItem onClick={() => alert("Eliminar clickeado")}
+                                                              className="font-sans">
+                                                <Delete/> Eliminar
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>}
+                                </TableCell>
+                            </TableRow>
+                            {
+                                getCompanion(guest.id).length>0 &&
+                                !expandedRow.some(value => value === index) &&
+                                <TableRow>
+                                    <TableCell colSpan={4}>
+                                        <div className="p-4">
+                                            <p className="font-semibold">Acompañantes:</p>
+                                            <Table className="mt-2">
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead>Nombre</TableHead>
+                                                        <TableHead>Teléfono</TableHead>
+                                                        <TableHead>Estado de la invitación</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {getCompanion(guest.id).map((companion, companionIndex) => (
+                                                        <TableRow key={companion.id}
+                                                                  className={`${companionIndex % 2 === 0 ? 'bg-[#DECDB2] hover:bg-[#B69A76]' : 'hover:bg-gray-300' }`}
+                                                        >
+                                                            <TableCell>{companion.name + " " + companion.surname}</TableCell>
+                                                            <TableCell>{companion.identifier}</TableCell>
+                                                            <TableCell>
+                                                                {InvitationType[companion.status as keyof typeof InvitationType]}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {/* ::::Aqui empieza los acompañantes::::: */}
+                                                                {itemLoadingIndex === index && subItemLoadingIndex === companionIndex ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <DropdownMenu>
+                                                                    <DropdownMenuTrigger asChild >
+                                                                        <Button className="bg-transparent hover:bg-gray-200"
+                                                                        >
+                                                                            <EllipsisVertical
+                                                                                className="text-black"/>
+                                                                        </Button>
+                                                                    </DropdownMenuTrigger>
+                                                                    <DropdownMenuContent>
+                                                                        {companion.status !== InvitationStatus.CONFIRMED &&
+                                                                            <DropdownMenuItem
+                                                                                onClick={() => onChangeStatus(companion.id, InvitationStatus.CONFIRMED, index,companionIndex)}
+                                                                                className="font-sans">
+                                                                                <CalendarCheck/> Confirmar
+                                                                            </DropdownMenuItem>
+                                                                        }
+                                                                        {companion.status !== InvitationStatus.REJECTED &&
+                                                                            <DropdownMenuItem
+                                                                                onClick={() => onChangeStatus(companion.id, InvitationStatus.REJECTED, index, companionIndex)}
+                                                                                className="font-sans">
+                                                                                <Ban/> Rechazar
+                                                                            </DropdownMenuItem>
+                                                                        }
+                                                                        <DropdownMenuItem onClick={() => alert("Editar clickeado")}
+                                                                                          className="font-sans">
+                                                                            <UserRoundPen/> Editar
+                                                                        </DropdownMenuItem>
+                                                                        <DropdownMenuItem onClick={() => alert("Eliminar clickeado")}
+                                                                                          className="font-sans">
+                                                                            <Delete/> Eliminar
+                                                                        </DropdownMenuItem>
+                                                                    </DropdownMenuContent>
+                                                                </DropdownMenu>}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            }
+                        </React.Fragment>
                     ))}
                 </TableBody>
             </Table>

@@ -4,6 +4,7 @@ import DateInfo from "@/app/components/dateInfo";
 import Location from "@/app/components/locationInfo";
 import ButtonLocation from "@/app/components/ButtonLocation";
 import RSVPForm from "@/app/components/RSVPForm";
+import Recommendations from "@/app/components/Recommendations";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
               <Location />
               <ButtonLocation />
               <RSVPForm />
+              <Recommendations/>
           </div>
         </div>
       </div>

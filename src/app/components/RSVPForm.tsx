@@ -52,7 +52,7 @@ export default function RSVPModal() {
     }
 
     return (
-        <div className="mt-3 md:mt-8 text-center">
+        <div className="mt-3 md:mt-4 text-center">
             {/* Botón que abre el modal */}
             <Dialog
                 open={open}
@@ -64,7 +64,8 @@ export default function RSVPModal() {
                 }}
             >
                 <DialogTrigger asChild>
-                    <button className="bg-[#937552] text-white px-2 py-1 md:px-5 md:py-2 rounded-full shadow hover:bg-[#9c8566] transition text-sm md:text-base">
+                    <button className="bg-[#937552] text-white px-2 py-1 md:px-5 md:py-2
+                    rounded-full shadow hover:bg-[#9c8566] transition text-sm md:text-base">
                         Confirmar asistencia
                     </button>
                 </DialogTrigger>
@@ -104,17 +105,20 @@ export default function RSVPModal() {
                                             <h3>Tu Reserva: </h3>
                                             <div>
                                                 <Table  className="text-lg">
-                                                    <TableHeader>
-                                                        <TableRow>
-                                                            <TableHead className="font-bold">Nombre</TableHead>
-                                                            <TableHead className="font-bold">Estado de la reserva</TableHead>
-                                                        </TableRow>
-                                                    </TableHeader>
+
                                                     <TableBody>
                                                         <TableRow>
-                                                            <TableCell>{confirAttendance.guest.fullName}</TableCell>
-                                                            <TableCell>{InvitationType[confirAttendance.guest.status as keyof typeof InvitationType]}</TableCell>
-                                                            <TableCell>
+                                                            <TableCell className={"text-sm md:text-base"}>{confirAttendance.guest.fullName}</TableCell>
+                                                            <TableCell className={"flex items-center text-sm md:text-base"}>
+                                                                {InvitationType[confirAttendance.guest.status as keyof typeof InvitationType]}
+                                                                <div className="block md:hidden">
+                                                                    <ReservationMenu
+                                                                        guest={confirAttendance.guest}
+                                                                        handleChangeStatus={handleStatusChange}
+                                                                    />
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell className="hidden md:block">
                                                                 <ReservationMenu
                                                                     guest={confirAttendance.guest}
                                                                     handleChangeStatus={handleStatusChange}
@@ -130,19 +134,25 @@ export default function RSVPModal() {
                                             <Table  className="text-lg">
                                                 <TableHeader>
                                                     <TableRow>
-                                                        <TableHead className="font-bold">Acompañante(s)</TableHead>
-                                                        <TableHead className="font-bold">Estado de la reserva</TableHead>
+                                                        <TableHead className="font-bold text-sm md:text-base">Acompañante(s)</TableHead>
+                                                        <TableHead className="font-bold text-sm md:text-base">Estado de la reserva</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
                                                     {
                                                         confirAttendance.companions.map((guest) => (
                                                             <TableRow key={guest.id}>
-                                                                <TableCell>{guest.fullName}</TableCell>
-                                                                <TableCell>
+                                                                <TableCell className={"text-sm md:text-base"}>{guest.fullName}</TableCell>
+                                                                <TableCell className={"flex items-center text-sm md:text-base"}>
                                                                     {InvitationType[guest.status as keyof typeof InvitationType]}
+                                                                    <div className="block md:hidden">
+                                                                        <ReservationMenu
+                                                                            guest={guest}
+                                                                            handleChangeStatus={handleStatusChange}
+                                                                        />
+                                                                    </div>
                                                                 </TableCell>
-                                                                <TableCell>
+                                                                <TableCell className="hidden md:block">
                                                                     <ReservationMenu
                                                                         guest={guest}
                                                                         handleChangeStatus={handleStatusChange}

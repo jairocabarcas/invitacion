@@ -52,7 +52,7 @@ export default function RSVPModal() {
     }
 
     return (
-        <div className="mt-8 text-center">
+        <div className="mt-3 md:mt-8 text-center">
             {/* Botón que abre el modal */}
             <Dialog
                 open={open}
@@ -64,7 +64,7 @@ export default function RSVPModal() {
                 }}
             >
                 <DialogTrigger asChild>
-                    <button className="bg-[#937552] text-white px-6 py-2 rounded-full shadow hover:bg-[#9c8566] transition text-sm md:text-base">
+                    <button className="bg-[#937552] text-white px-2 py-1 md:px-5 md:py-2 rounded-full shadow hover:bg-[#9c8566] transition text-sm md:text-base">
                         Confirmar asistencia
                     </button>
                 </DialogTrigger>

@@ -25,3 +25,8 @@ export interface GuestResponse {
     updatedAt: Date;
     createdBy: string; //usuario que lo creó
 }
+
+export interface ConfirmAttendance {
+    guest: GuestResponse;
+    companions: GuestResponse[];
+}

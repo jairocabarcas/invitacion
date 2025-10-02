@@ -1,4 +1,4 @@
-import { GuestRequest, GuestResponse } from "@/models/guest.model";
+import {ConfirmAttendance, GuestRequest, GuestResponse} from "@/models/guest.model";
 import {InvitationStatus} from "@/models/enums";
 
 // ---------------------------------------------------
@@ -100,4 +100,13 @@ export async function deleteGuest(id: string): Promise<void> {
             ...(token && { "Authorization": `Bearer ${token}` }),
         },
     });
+}
+
+export async function getConfirmAttendance(guestId: string): Promise<ConfirmAttendance> {
+    return await apiFetch(`/guests/${guestId}/find-to-reserve`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
 }

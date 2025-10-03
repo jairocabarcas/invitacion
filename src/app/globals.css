@@ -122,3 +122,7 @@
 .bg-fondo {
   background-image: url('/imagenes/fondo-invitacion.png');
 }
+
+.bg-fondo-flores {
+  background-image: url('/imagenes/fondo-flores.png');
+}

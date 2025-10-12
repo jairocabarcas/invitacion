@@ -46,10 +46,14 @@ export default function Information(){
                                 por eso queremos vivirlo de la manera más solemne.
                                 Por eso queremos que tengas las siguientes indicaciones durante la celebración.</p>
                             <ul className="px-2 flex flex-col items-start">
-                                <li className="flex items-center gap-1"><Dot />Primeras bancas son para padres y padrinos</li>
-                                <li className="flex items-center gap-1"><Dot />Familia de la novia a la izquierda y del novio a la derecha </li>
-                                <li className="flex items-center gap-1"><Dot />Familia de la novia a la izquierda y del novio a la derecha </li>
-                                <li className="flex gap-1"><Dot />Pueden fotografiar y grabar, pero no se muevan de sus asientos</li>
+                                <li className="flex items-center gap-1"><Dot className="w-5 h-5" />Primeras bancas son para padres y padrinos</li>
+                                <li className="flex items-center gap-1"><Dot className="w-5 h-5" />Familia de la novia a la izquierda y del novio a la derecha </li>
+                                <li className="flex gap-1"><Dot className="w-5 h-5" />Durante los votos y despues, no acercarse para felicitar ya tendremos un espacio para eso</li>
+                                <li className="flex gap-1"><Dot className="w-5 h-5" />Durante la el momento de la paz dense la paz entre ustedes nosotros viviermos nuestro momento en pareja </li>
+                                <li className="flex items-center gap-1"><Dot className="w-5 h-5" />Despues de la comunión es un momento de oracion con Jesús eucaristia, Oren por nosotros y dejenno orar. </li>
+                                <li className="flex items-center gap-1"><Dot className="w-5 h-5" />Despues de la bendición final y durante el canto Mariano entregaremos las flores a Jesus eucaristia pidiendole que nos acompañe en esta etapa. oren por nosotros</li>
+                                <li className="flex items-center gap-1"><Dot className="w-5 h-5" />Despues de acabado todos los momentos de la eucaristia llega el momento de las felicitaciones</li>
+                                <li className="flex gap-1"><Dot className="w-5 h-5" />Pueden fotografiar y grabar, pero no se muevan de sus asientos</li>
                             </ul>
                         </div>
                     </div>

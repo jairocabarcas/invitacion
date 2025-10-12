@@ -16,10 +16,10 @@ export default function GiftModal(){
             <DialogTrigger asChild>
                 <Button
                     className="flex items-center gap-1
-                justify-center border-2 border-[#937552]
-                text-[#937552]  px-2 py-1
+                justify-center border-2 border-[#000]
+                text-[#000]  px-2 py-1
                 bg-transparent
-                rounded-full shadow hover:bg-[#937552] hover:text-white
+                rounded-full shadow hover:bg-[#000] hover:text-white
                 transition font-bold text-sm md:text-base"
                 >
                     {/*<MapPin className="h-3 w-4 md:h-auto"/>*/}

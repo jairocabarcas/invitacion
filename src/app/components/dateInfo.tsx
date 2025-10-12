@@ -12,22 +12,22 @@ export default function DateInfo() {
         <div className="text-center my-5">
             <div className="flex items-center justify-center w-full gap-5">
                 <div className="h-full  flex items-center justify-center pt-4 md:pt-7">
-                    <span className="uppercase px-2 border-y-2 border-y-[#937552] font-bold text-[15px] md:text-lg tracking-widest text-[#937552]">
+                    <span className="uppercase px-2 border-y-2 border-y-[#545454] font-bold text-[15px] md:text-lg tracking-widest text-[#545454]">
                         Sábado
                     </span>
                 </div>
                 <div className="h-full flex items-center justify-center">
-                    <span className={`${playFairDisplay.className} text-6xl md:text-8xl font-medium  text-[#937552] text-center`}>
+                    <span className={`${playFairDisplay.className} text-6xl md:text-8xl font-medium  text-[#000] text-center`}>
                       10
                     </span>
                 </div>
                 <div className="h-full flex items-center justify-center pt-4 md:pt-7">
-                    <span className="uppercase px-2 border-y-2 border-y-[#937552] font-bold text-[15px] md:text-lg tracking-widest text-[#937552]">
+                    <span className="uppercase px-2 border-y-2 border-y-[#545454] font-bold text-[15px] md:text-lg tracking-widest text-[#545454]">
                       Enero
                     </span>
                 </div>
             </div>
-            <span className="mt-2 text-[18px] md:text-xl text-[#8c6d57]">Hora: 10:30 am</span>
+            <span className="mt-2 text-[18px] md:text-xl text-[#545454]">Hora: 10:30 am</span>
         </div>
     );
 }

@@ -9,8 +9,9 @@ export default function ButtonLocation() {
                 rel="noopener noreferrer"
                 className="flex items-center
                 gap-1 justify-center md:space-x-2
-                bg-[#937552] text-white
-                md:px-4 md:py-2 px-2 py-1 rounded-full shadow hover:bg-[#9c8566]
+                bg-[#000] text-white
+                md:px-4 md:py-2 px-2 py-1 rounded-full shadow hover:bg-[#000]/2
+                hover:text-[#000]
                 transition text-sm md:text-base
                 w-[130px]
                 "
@@ -24,8 +25,9 @@ export default function ButtonLocation() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 justify-center md:space-x-2
-                bg-[#937552] text-white md:px-4 md:py-2 px-2 py-1
-                rounded-full shadow hover:bg-[#9c8566] transition text-sm md:text-base
+                bg-[#000] text-white md:px-4 md:py-2 px-2 py-1
+                hover:text-[#000]
+                rounded-full shadow hover:bg-[#000]/2 transition text-sm md:text-base
                 w-[130px]
                 "
             >

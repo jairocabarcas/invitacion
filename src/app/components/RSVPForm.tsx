@@ -64,8 +64,8 @@ export default function RSVPModal() {
                 }}
             >
                 <DialogTrigger asChild>
-                    <button className="bg-[#937552] text-white px-2 py-1 md:px-5 md:py-2
-                    rounded-full shadow hover:bg-[#9c8566] transition text-sm md:text-base
+                    <button className="bg-[#000] text-white px-2 py-1 md:px-5 md:py-2
+                    rounded-full shadow hover:bg-[#000]/2 hover:text-[#000] transition text-sm md:text-base
                     w-[160px] md:w-[190px]
                     "
                     >
@@ -84,7 +84,7 @@ export default function RSVPModal() {
                     </DialogHeader>
                     {loading ?
                         <div className="w-full flex justify-center items-center">
-                            <Loader2 className="mr-2 h-10 w-10 animate-spin text-[#8c6d57]"/>
+                            <Loader2 className="mr-2 h-10 w-10 animate-spin text-[#545454]"/>
                         </div> :
                         <div className="w-full flex flex-col gap-4">
                             <div className="flex items-center px-2 gap-2">
@@ -93,7 +93,7 @@ export default function RSVPModal() {
                                        className="font-serif"
                                 />
                                 <Button
-                                    className="bg-[#937552]"
+                                    className="bg-[#545454]"
                                     onClick={handleSearch}
                                     disabled={identifier === ""}
                                 >

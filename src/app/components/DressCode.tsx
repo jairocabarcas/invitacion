@@ -12,8 +12,28 @@ import {Icon} from "lucide-react";
 import {dress} from "@lucide/lab";
 import {Separator} from "@/components/ui/separator";
 import {Button} from "@/components/ui/button";
+import Image from "next/image";
+import { Dancing_Script } from 'next/font/google';
+
+const dancingScript = Dancing_Script({
+    // La fuente soporta pesos desde 400 hasta 700.
+    // Al usar el rango completo, solo necesitas definir los extremos:
+    weight: ['400', '700'],
+
+    // Dancing Script solo tiene un estilo, que es cursivo por naturaleza.
+    // Usamos 'normal' para indicar que cargamos la variante base de la fuente.
+    style: ['normal'],
+
+    subsets: ['latin'],
+    display: 'swap',
+
+    // Opcional: Recomendado para usar la fuente en componentes específicos
+    // a través de CSS.
+    variable: '--font-dancing-script',
+});
 
 export default function DressCode() {
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -42,8 +62,30 @@ export default function DressCode() {
                         Código de vestimenta para el matrimonio
                     </DialogDescription>
                     <Separator/>
-                    <div>
-                        Aqui toda la infomacion
+                    <h1 className={`text-center text-3xl font-bold ${dancingScript.className}`}>Elegante</h1>
+                    <div className="p-4 flex md:hidden justify-center items-center">
+                        <Image src="/imagenes/dresscode.png" alt="dress code" width={200} height={200}/>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-0">
+                        <div className={`p-4 text-3xl flex flex-col gap-2`}>
+                            <h3 className={`text-center ${dancingScript.className} font-bold text-[#545454]`}>Hombres</h3>
+                            <ul className="list-disc pl-4 list-outside text-sm text-left">
+                                <li>Guayabera manga larga Blanca</li>
+                                <li>Pantalon beige</li>
+                                <li>Zapatos formales (no tenis)</li>
+                            </ul>
+                        </div>
+                        <div className="hidden p-4 md:flex justify-center items-center">
+                            <Image src="/imagenes/dresscode.png" alt="dress code" width={200} height={200}/>
+                        </div>
+                        <div className={`p-4 text-3xl flex flex-col gap-2`}>
+                            <h3 className={`text-center ${dancingScript.className} font-bold text-[#545454]`}>Mujeres</h3>
+                            <ul className="list-disc pl-4 list-outside text-sm text-left">
+                                <li>Vestido largo</li>
+                                <li>No blanco, beige o gris</li>
+                                <li>Accesorios y zapatos a su gusto</li>
+                            </ul>
+                        </div>
                     </div>
                 </DialogHeader>
             </DialogContent>

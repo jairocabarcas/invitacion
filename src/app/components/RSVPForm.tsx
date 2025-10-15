@@ -26,13 +26,18 @@ export default function RSVPModal() {
 
     const handleSearch = async () => {
         setLoading(true);
-        const guestResponse = await findGuestsByIdentifier(identifier);
-        if (guestResponse) {
-            const confirmAttendanceResponse = await getConfirmAttendance(guestResponse.id);
-            if (confirmAttendanceResponse) {
-                setConfirAttendance(confirmAttendanceResponse);
+        try{
+            const guestResponse = await findGuestsByIdentifier(identifier);
+            if (guestResponse) {
+                const confirmAttendanceResponse = await getConfirmAttendance(guestResponse.id);
+                if (confirmAttendanceResponse) {
+                    setConfirAttendance(confirmAttendanceResponse);
 
+                }
             }
+        }catch (err){
+            alert('Error al guardar, revisa los datos y vuelve a intentarlo')
+            setIdentifier("")
         }
         setLoading(false);
     };
@@ -41,7 +46,11 @@ export default function RSVPModal() {
         setLoading(true);
         const guestResponse = await updateStatus(guestId, status);
         if (guestResponse) {
-            await handleSearch();
+            try{
+                await handleSearch();
+            }catch (err){
+                alert('Error al guardar, revisa los datos y vuelve a intentarlo')
+            }
         }
         setLoading(false);
     }

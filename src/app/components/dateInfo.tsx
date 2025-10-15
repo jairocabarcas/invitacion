@@ -27,7 +27,7 @@ export default function DateInfo() {
                     </span>
                 </div>
             </div>
-            <span className="mt-2 text-[18px] md:text-xl text-[#545454]">Hora: 10:30 am</span>
+            <span className="mt-2 text-[18px] md:text-xl text-[#545454]">Hora: 11:00 am</span>
         </div>
     );
 }

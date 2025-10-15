@@ -55,7 +55,7 @@ export default function GiftModal(){
                                 </div>
                             </li>
                             <li>
-                                Si les queda mejor, <strong>¡pregúntenle a Melissa &#128514;!</strong>
+                                <strong>Si el regalo no los convence,</strong> tranquilos, Melissa tiene el radar afinado para encontrar el detalle perfecto &#128514;
                             </li>
                         </ol>
                         <p>

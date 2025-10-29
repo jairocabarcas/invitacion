@@ -119,7 +119,7 @@ export default function GuestManagement(){
                             <Loader2 className="mr-2 h-36 w-36 animate-spin text-[#8c6d57]"/>
                         </div> :
                         <>
-                            <div className=" flex gap-4">
+                            <div className=" flex md:flex-row flex-col gap-4">
                                 <div>
                                     {selectedEvents &&
                                         <div className="px-2">
@@ -135,8 +135,11 @@ export default function GuestManagement(){
                                                     }
                                                 </SelectContent>
                                             </Select>
-                                            <div>
+                                            <div className="flex flex-col">
                                                 <span>Total Invitados: {guests.length}</span>
+                                                <span>Total Confirmados: {guests.filter(guest => guest.status === InvitationStatus.CONFIRMED).length}</span>
+                                                <span>Total pendientes: {guests.filter(guest => guest.status === InvitationStatus.PENDING).length}</span>
+                                                <span>Total Rechazados: {guests.filter(guest => guest.status === InvitationStatus.REJECTED).length}</span>
                                             </div>
                                         </div>
                                     }
@@ -203,153 +206,312 @@ const GuestPanel = (
         return guests.filter(guest => guest.mainGuestId === guestId)
     }
 
-    return (
-        <div className="p-10">
-            <Table>
+    return(
+        <div className="p-4 sm:p-10">
+            <Table className="hidden md:table">
+                {/* --- Versión de tabla para pantallas medianas y grandes --- */}
                 <TableCaption>Lista de invitados registrados.</TableCaption>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="text-center ">Nombre</TableHead>
-                        <TableHead className="text-center ">Telefono</TableHead>
-                        <TableHead className="text-center ">Estado de la invitacion</TableHead>
+                        <TableHead className="text-center">Nombre</TableHead>
+                        <TableHead className="text-center">Teléfono</TableHead>
+                        <TableHead className="text-center">Estado de la invitación</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {Array.isArray(guests) && guests.filter(guest => !guest.mainGuestId)
-                        .map((guest, index) => (
-                        <React.Fragment key={guest.id}>
-                            <TableRow
-                                      className={`${index % 2 === 0 ? 'bg-[#DECDB2] hover:bg-[#B69A76]' : 'hover:bg-gray-300' }`}
-
-                            >
-                                <TableCell className="text-center flex items-center"
-                                           onClick={() => expandRow(index)}
-                                >
-                                    {getCompanion(guest.id).length>0 && <>{expandedRow.some(value => value === index) ?
-                                        <SquarePlus className="pr-2"/> : <SquareMinus className="pr-2"/>}</>}
-                                    <>{guest.name +' '+ guest.surname}</>
-                                </TableCell>
-                                <TableCell className="text-center ">{guest.identifier}</TableCell>
-                                <TableCell className="text-center">
-                                    {InvitationType[guest.status as keyof typeof InvitationType]}
-                                </TableCell>
-                                <TableCell>
-                                    {itemLoadingIndex === index ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <DropdownMenu>
-                                        <DropdownMenuTrigger asChild >
-                                            <Button className="bg-transparent hover:bg-gray-200"
-                                            >
-                                                <EllipsisVertical
-                                                    className="text-black"/>
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent>
-                                            <DropdownMenuItem
-                                                onClick={()=> {setOpenGuestId(guest.id);}}
-                                                className="font-sans"
-                                            >
-                                                <UserPlus />Añadir acompañante
-                                            </DropdownMenuItem>
-                                            {guest.status !== InvitationStatus.CONFIRMED &&
-                                                <DropdownMenuItem
-                                                    onClick={() => onChangeStatus(guest.id, InvitationStatus.CONFIRMED, index)}
-                                                    className="font-sans">
-                                                    <CalendarCheck/> Confirmar
-                                                </DropdownMenuItem>
+                    {Array.isArray(guests) &&
+                        guests
+                            .filter((guest) => !guest.mainGuestId)
+                            .map((guest, index) => (
+                                <React.Fragment key={guest.id}>
+                                    <TableRow
+                                        className={`${
+                                            index % 2 === 0
+                                                ? "bg-[#DECDB2] hover:bg-[#B69A76]"
+                                                : "hover:bg-gray-300"
+                                        }`}
+                                    >
+                                        <TableCell
+                                            className="text-center flex items-center"
+                                            onClick={() => expandRow(index)}
+                                        >
+                                            {getCompanion(guest.id).length > 0 && (
+                                                <>
+                                                    {expandedRow.some((value) => value === index) ? (
+                                                        <SquarePlus className="pr-2" />
+                                                    ) : (
+                                                        <SquareMinus className="pr-2" />
+                                                    )}
+                                                </>
+                                            )}
+                                            <>{guest.name + " " + guest.surname}</>
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                            {guest.identifier}
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                            {
+                                                InvitationType[
+                                                    guest.status as keyof typeof InvitationType
+                                                    ]
                                             }
-                                            {guest.status !== InvitationStatus.REJECTED &&
-                                                <DropdownMenuItem
-                                                    onClick={() => onChangeStatus(guest.id, InvitationStatus.REJECTED, index)}
-                                                    className="font-sans">
-                                                    <Ban/> Rechazar
-                                                </DropdownMenuItem>
-                                            }
-                                            <DropdownMenuItem onClick={() => alert("Editar clickeado")}
-                                                              className="font-sans">
-                                                <UserRoundPen/> Editar
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => alert("Eliminar clickeado")}
-                                                              className="font-sans">
-                                                <Delete/> Eliminar
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>}
-                                </TableCell>
-                            </TableRow>
-                            {
-                                getCompanion(guest.id).length>0 &&
-                                !expandedRow.some(value => value === index) &&
-                                <TableRow>
-                                    <TableCell colSpan={4}>
-                                        <div className="p-4">
-                                            <p className="font-semibold">Acompañantes:</p>
-                                            <Table className="mt-2">
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        <TableHead>Nombre</TableHead>
-                                                        <TableHead>Teléfono</TableHead>
-                                                        <TableHead>Estado de la invitación</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {getCompanion(guest.id).map((companion, companionIndex) => (
-                                                        <TableRow key={companion.id}
-                                                                  className={`${companionIndex % 2 === 0 ? 'bg-[#DECDB2] hover:bg-[#B69A76]' : 'hover:bg-gray-300' }`}
+                                        </TableCell>
+                                        <TableCell>
+                                            {itemLoadingIndex === index ? (
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            ) : (
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button className="bg-transparent hover:bg-gray-200">
+                                                            <EllipsisVertical className="text-black" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent>
+                                                        <DropdownMenuItem
+                                                            onClick={() => {
+                                                                setOpenGuestId(guest.id);
+                                                            }}
+                                                            className="font-sans"
                                                         >
-                                                            <TableCell>{companion.name + " " + companion.surname}</TableCell>
-                                                            <TableCell>{companion.identifier}</TableCell>
-                                                            <TableCell>
-                                                                {InvitationType[companion.status as keyof typeof InvitationType]}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                {/* ::::Aqui empieza los acompañantes::::: */}
-                                                                {itemLoadingIndex === index && subItemLoadingIndex === companionIndex ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <DropdownMenu>
-                                                                    <DropdownMenuTrigger asChild >
-                                                                        <Button className="bg-transparent hover:bg-gray-200"
+                                                            <UserPlus /> Añadir acompañante
+                                                        </DropdownMenuItem>
+                                                        {guest.status !== InvitationStatus.CONFIRMED && (
+                                                            <DropdownMenuItem
+                                                                onClick={() =>
+                                                                    onChangeStatus(
+                                                                        guest.id,
+                                                                        InvitationStatus.CONFIRMED,
+                                                                        index
+                                                                    )
+                                                                }
+                                                                className="font-sans"
+                                                            >
+                                                                <CalendarCheck /> Confirmar
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                        {guest.status !== InvitationStatus.REJECTED && (
+                                                            <DropdownMenuItem
+                                                                onClick={() =>
+                                                                    onChangeStatus(
+                                                                        guest.id,
+                                                                        InvitationStatus.REJECTED,
+                                                                        index
+                                                                    )
+                                                                }
+                                                                className="font-sans"
+                                                            >
+                                                                <Ban /> Rechazar
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                        <DropdownMenuItem
+                                                            onClick={() => alert("Editar clickeado")}
+                                                            className="font-sans"
+                                                        >
+                                                            <UserRoundPen /> Editar
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onClick={() => alert("Eliminar clickeado")}
+                                                            className="font-sans"
+                                                        >
+                                                            <Delete /> Eliminar
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+                                    {/* --- Acompañantes --- */}
+                                    {getCompanion(guest.id).length > 0 &&
+                                        !expandedRow.some((value) => value === index) && (
+                                            <TableRow>
+                                                <TableCell colSpan={4}>
+                                                    <div className="p-4">
+                                                        <p className="font-semibold">Acompañantes:</p>
+                                                        <Table className="mt-2">
+                                                            <TableHeader>
+                                                                <TableRow>
+                                                                    <TableHead>Nombre</TableHead>
+                                                                    <TableHead>Teléfono</TableHead>
+                                                                    <TableHead>Estado</TableHead>
+                                                                </TableRow>
+                                                            </TableHeader>
+                                                            <TableBody>
+                                                                {getCompanion(guest.id).map(
+                                                                    (companion, companionIndex) => (
+                                                                        <TableRow
+                                                                            key={companion.id}
+                                                                            className={`${
+                                                                                companionIndex % 2 === 0
+                                                                                    ? "bg-[#DECDB2] hover:bg-[#B69A76]"
+                                                                                    : "hover:bg-gray-300"
+                                                                            }`}
                                                                         >
-                                                                            <EllipsisVertical
-                                                                                className="text-black"/>
-                                                                        </Button>
-                                                                    </DropdownMenuTrigger>
-                                                                    <DropdownMenuContent>
-                                                                        {companion.status !== InvitationStatus.CONFIRMED &&
-                                                                            <DropdownMenuItem
-                                                                                onClick={() => onChangeStatus(companion.id, InvitationStatus.CONFIRMED, index,companionIndex)}
-                                                                                className="font-sans">
-                                                                                <CalendarCheck/> Confirmar
-                                                                            </DropdownMenuItem>
-                                                                        }
-                                                                        {companion.status !== InvitationStatus.REJECTED &&
-                                                                            <DropdownMenuItem
-                                                                                onClick={() => onChangeStatus(companion.id, InvitationStatus.REJECTED, index, companionIndex)}
-                                                                                className="font-sans">
-                                                                                <Ban/> Rechazar
-                                                                            </DropdownMenuItem>
-                                                                        }
-                                                                        <DropdownMenuItem onClick={() => alert("Editar clickeado")}
-                                                                                          className="font-sans">
-                                                                            <UserRoundPen/> Editar
-                                                                        </DropdownMenuItem>
-                                                                        <DropdownMenuItem onClick={() => alert("Eliminar clickeado")}
-                                                                                          className="font-sans">
-                                                                            <Delete/> Eliminar
-                                                                        </DropdownMenuItem>
-                                                                    </DropdownMenuContent>
-                                                                </DropdownMenu>}
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            }
-                        </React.Fragment>
-                    ))}
+                                                                            <TableCell>
+                                                                                {companion.name +
+                                                                                    " " +
+                                                                                    companion.surname}
+                                                                            </TableCell>
+                                                                            <TableCell>
+                                                                                {companion.identifier}
+                                                                            </TableCell>
+                                                                            <TableCell>
+                                                                                {
+                                                                                    InvitationType[
+                                                                                        companion.status as keyof typeof InvitationType
+                                                                                        ]
+                                                                                }
+                                                                            </TableCell>
+                                                                            <TableCell>
+                                                                                {itemLoadingIndex === index &&
+                                                                                subItemLoadingIndex ===
+                                                                                companionIndex ? (
+                                                                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                                                ) : (
+                                                                                    <DropdownMenu>
+                                                                                        <DropdownMenuTrigger asChild>
+                                                                                            <Button className="bg-transparent hover:bg-gray-200">
+                                                                                                <EllipsisVertical className="text-black" />
+                                                                                            </Button>
+                                                                                        </DropdownMenuTrigger>
+                                                                                        <DropdownMenuContent>
+                                                                                            {companion.status !==
+                                                                                                InvitationStatus.CONFIRMED && (
+                                                                                                    <DropdownMenuItem
+                                                                                                        onClick={() =>
+                                                                                                            onChangeStatus(
+                                                                                                                companion.id,
+                                                                                                                InvitationStatus.CONFIRMED,
+                                                                                                                index,
+                                                                                                                companionIndex
+                                                                                                            )
+                                                                                                        }
+                                                                                                        className="font-sans"
+                                                                                                    >
+                                                                                                        <CalendarCheck /> Confirmar
+                                                                                                    </DropdownMenuItem>
+                                                                                                )}
+                                                                                            {companion.status !==
+                                                                                                InvitationStatus.REJECTED && (
+                                                                                                    <DropdownMenuItem
+                                                                                                        onClick={() =>
+                                                                                                            onChangeStatus(
+                                                                                                                companion.id,
+                                                                                                                InvitationStatus.REJECTED,
+                                                                                                                index,
+                                                                                                                companionIndex
+                                                                                                            )
+                                                                                                        }
+                                                                                                        className="font-sans"
+                                                                                                    >
+                                                                                                        <Ban /> Rechazar
+                                                                                                    </DropdownMenuItem>
+                                                                                                )}
+                                                                                            <DropdownMenuItem
+                                                                                                onClick={() =>
+                                                                                                    alert("Editar clickeado")
+                                                                                                }
+                                                                                                className="font-sans"
+                                                                                            >
+                                                                                                <UserRoundPen /> Editar
+                                                                                            </DropdownMenuItem>
+                                                                                            <DropdownMenuItem
+                                                                                                onClick={() =>
+                                                                                                    alert("Eliminar clickeado")
+                                                                                                }
+                                                                                                className="font-sans"
+                                                                                            >
+                                                                                                <Delete /> Eliminar
+                                                                                            </DropdownMenuItem>
+                                                                                        </DropdownMenuContent>
+                                                                                    </DropdownMenu>
+                                                                                )}
+                                                                            </TableCell>
+                                                                        </TableRow>
+                                                                    )
+                                                                )}
+                                                            </TableBody>
+                                                        </Table>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                </React.Fragment>
+                            ))}
                 </TableBody>
             </Table>
+
+            {/* --- Vista móvil tipo tarjeta --- */}
+            <div className="md:hidden flex flex-col gap-4">
+                {Array.isArray(guests) &&
+                    guests
+                        .map((guest, index) => (
+                            <div
+                                key={guest.id}
+                                className={`rounded-xl shadow-md p-4 ${
+                                    index % 2 === 0 ? "bg-[#DECDB2]" : "bg-gray-100"
+                                }`}
+                            >
+                                <div className="flex justify-between items-center">
+                                    <div className="font-semibold text-lg">
+                                        {guest.name} {guest.surname}
+                                    </div>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button className="bg-transparent hover:bg-gray-200">
+                                                <EllipsisVertical className="text-black" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem
+                                                onClick={() => setOpenGuestId(guest.id)}
+                                                className="font-sans"
+                                            >
+                                                <UserPlus /> Añadir acompañante
+                                            </DropdownMenuItem>
+                                            {guest.status !== InvitationStatus.CONFIRMED && (
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        onChangeStatus(
+                                                            guest.id,
+                                                            InvitationStatus.CONFIRMED,
+                                                            index
+                                                        )
+                                                    }
+                                                >
+                                                    <CalendarCheck /> Confirmar
+                                                </DropdownMenuItem>
+                                            )}
+                                            {guest.status !== InvitationStatus.REJECTED && (
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        onChangeStatus(
+                                                            guest.id,
+                                                            InvitationStatus.REJECTED,
+                                                            index
+                                                        )
+                                                    }
+                                                >
+                                                    <Ban /> Rechazar
+                                                </DropdownMenuItem>
+                                            )}
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
+                                <p className="text-sm text-gray-600 mt-1">
+                                    Teléfono: {guest.identifier}
+                                </p>
+                                <p className="text-sm mt-1">
+                                    Estado:{" "}
+                                    <span className="font-semibold">
+                    {InvitationType[guest.status as keyof typeof InvitationType]}
+                  </span>
+                                </p>
+                            </div>
+                        ))}
+            </div>
         </div>
-    )
+    );
 }
 
 const loadEvents = async (userId: string) => {
